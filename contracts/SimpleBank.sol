@@ -10,34 +10,19 @@ contract SimpleBank {
 
     /* State variables
      */
-    
-    
-    // Fill in the visibility keyword. 
-    // Hint: We want to protect our users balance from other contracts
     mapping (address => uint) private balances ;
     
-    // Fill in the visibility keyword
-    // Hint: We want to create a getter function and allow contracts to be able
-    //       to see if a user is enrolled.
     mapping (address => bool) public enrolled;
 
-    // Let's make sure everyone knows who owns the bank, yes, fill in the
-    // appropriate visilibility keyword
     address public owner = msg.sender;
     
     /* Events - publicize actions to external listeners
      */
     
-    // Add an argument for this event, an accountAddress
     event LogEnrolled(address accountAddress);
 
-    // event LogAmount(uint amount);
-
-    // Add 2 arguments for this event, an accountAddress and an amount
     event LogDepositMade(address accountAddress, uint amount);
 
-    // Create an event called LogWithdrawal
-    // Hint: it should take 3 arguments: an accountAddress, withdrawAmount and a newBalance 
     event LogWithdrawal(address accountAddress, uint newBalance, uint withdrawAmount);
 
     /* Functions
@@ -48,7 +33,7 @@ contract SimpleBank {
     // Typically, called when invalid data is sent
     // Added so ether sent to this contract is reverted if the contract fails
     // otherwise, the sender's money is transferred to contract
-    function () external payable {
+    fallback () external payable {
         revert();
     }
 
@@ -99,14 +84,6 @@ contract SimpleBank {
     /// @param withdrawAmount amount you want to withdraw
     /// @return The balance remaining for the user
     function withdraw(uint withdrawAmount) public returns (uint) {
-      // If the sender's balance is at least the amount they want to withdraw,
-      // Subtract the amount from the sender's balance, and try to send that amount of ether
-      // to the user attempting to withdraw. 
-      // return the user's balance.
-      // emit LogAmount(withdrawAmount);
-      // 
-
-      // 1. Use a require expression to guard/ensure sender has enough funds
       require(
         balances[msg.sender] >= withdrawAmount,
         "Not enough funds"
@@ -115,8 +92,6 @@ contract SimpleBank {
       // 2. Transfer Eth to the sender and decrement the withdrawal amount from
       //    sender's balance
       balances[msg.sender] -= withdrawAmount;
-
-      // 3. Emit the appropriate event for this message
       emit LogWithdrawal(msg.sender, balances[msg.sender], withdrawAmount);
 
       return balances[msg.sender];
